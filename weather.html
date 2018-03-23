@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<title>Seminario Gráfica Computacional I 2018, Primer Semestre → Clase 1 → Viernes 16 de marzo</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
+  integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
+  crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js"
+  integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw=="
+  crossorigin=""></script>
+<link href="https://fonts.googleapis.com/css?family=Abril+Fatface" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+	<div class="row">
+        <div class="col-sm-7 py-5" style="background-color: #ffffff">
+            <h1>Ciudad de Paris</h1>
+            <h3>Temperatura actual</h3>
+            <p>El clima de París es oceánico semicontinental (también denominado «clima de transición») al encontrarse alejada de la costa. Las precipitaciones son algo abundantes aunque no excesivas, con una media de aproximadamente 636 mm y están repartidas a lo largo de todo el año de forma regular sin tener un destacado mínimo pluviométrico (es decir, una estación seca). Las temperaturas en verano pueden superar los 30 °C ocasionalmente, aunque rara vez se superan los 35 °C; las temperaturas máximas suelen rondar entre los 25 °C y 30 °C y son frecuentes las tormentas. La primavera y el primer mes del otoño son suaves, con abundantes días de lluvia. Durante gran parte del otoño y en todo el invierno reina el frío. En algunos meses (sobre todo en diciembre, enero y febrero) el frío se da de manera intensa, con temperaturas que apenas superan los 7 grados de máxima y mínimas que muchas veces no llegan a 0 grados.</p>
+
+        </div>
+            
+        <div class="col-sm-5 py-5">            
+            <div id="mapid"></div>
+        </div> 
+        <div class="col-sm-12 py-5" style="color: #ffffff">
+            
+            <p>Es la capital de Francia y su ciudad más poblada. Capital de la región de Isla de Francia (o "Región Parisina"), es constituida en la única comuna unidepartamental del país. Está situada a ambos márgenes de un largo meandro del río Sena, en el centro de la cuenca parisina, entre la confluencia del río Marne y el Sena, aguas arriba, y el Oise y el Sena, aguas abajo.</p>
+            
+            <p>La ciudad de París, dentro de sus estrechos límites administrativos, tiene una población de 2.273.305 habitantes en 2015. Sin embargo, en el siglo XX, el área metropolitana de París se expandió más allá de los límites del municipio de París, y es hoy en día, con una población de 12 405 426 habitantes en 2013, la segunda área metropolitana del continente europeo (después de Londres) y la 28ª del mundo.4</p>
+            
+            <p>La región de París es junto con la de Londres, uno de los núcleos económicos más importantes de Europa. Con 607 000 millones de euros (845 000 millones de dólares), produjo más de una cuarta parte del producto interior bruto (PIB) de Francia en 2011. La Défense es el principal barrio de negocios de Europa, alberga la sede social de casi la mitad de las grandes empresas francesas, así como la sede de veinte de las 100 más grandes del mundo.</p>
+            
+        </div>
+    </div>
+		<div class="col-sm-12" style="border-top:1px solid #eee;">
+			<div class="row pt-3 pb-4 small">
+				<div class="col-sm-3">
+					<p><a href="index.html">Volver</a></p>
+				</div>
+				<div class="col-sm-9  text-right" style="color: #FFFFFF">
+					<p>Seminario Gráfica Computacional I 2018, Primer Semestre → Clase 2, Prueba 1 → Viernes 23 de marzo</p>
+				</div>
+			</div>		
+		</div>
+	</div>
+<script>
+    
+var urlStart = "https://api.openweathermap.org/data/2.5/weather";
+
+var urlCityID = 2988507;
+    
+var urlUnit = "metric";
+    
+var urlApiKey = "d101bdc568775b08f59259fd155072ff";
+    
+var url =urlStart + "?id=" + urlCityID + "&units=" + urlUnit + "&appid=" + urlApiKey;
+    
+var request = new XMLHttpRequest();
+request.open('GET', url, true);
+request.onload = function () {
+  var data = JSON.parse(this.response);
+  var lat = data.coord.lat;
+  var lon = data.coord.lon;
+  var ciudad = data.name;
+  var humedad = data.main.humidity;
+  var temperatura = Math.round(data.main.temp);
+
+  console.log(data);
+  console.log(lat);
+  console.log(lon);
+  console.log(ciudad);
+  console.log(humedad + "%");
+  console.log(temperatura + "º C");
+    
+    if(temperatura > 25) {
+        document.body.style.backgroundColor ="#e64a19";
+    }
+    
+    else{
+        document.body.style.backgroundColor ="#1976d2";
+    }    
+    
+  //mapa
+	var mymap = L.map('mapid').setView([lat, lon], 15);
+	L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+		maxZoom: 20,
+		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' + 'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+		id: 'mapbox.streets'
+	}).addTo(mymap);
+	L.marker([lat, lon]).addTo(mymap)
+	.bindPopup("<h5>"+ ciudad + "</h5><p>Hay " + temperatura + "ºC, con " + humedad + "% de humedad<p>").openPopup();
+}
+request.send();
+</script>
+</body>
+</html>
+
